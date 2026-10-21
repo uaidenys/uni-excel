@@ -462,6 +462,8 @@ pub(super) fn translate(text: &str) -> Option<&'static str> {
         "Search Commands" => "Pesquisar Comandos",
         "Agent Control" => "Controle por Agentes",
         "About Uni Excel" => "Sobre o Uni Excel",
+        "Version" => "Versão",
+        "Based on GridCraft, an open-source spreadsheet written in Rust." => "Baseado no GridCraft, uma planilha open-source escrita em Rust.",
         "Insert Chart" => "Inserir Gráfico",
         "Select Data Source" => "Selecionar Fonte de Dados",
         "Action Journal" => "Registro de Ações",

@@ -1,11 +1,13 @@
 <#
 .SYNOPSIS
-  Build, sign and package GridCraft for Windows.
+  Build, sign and package Uni Excel for Windows.
 
 .DESCRIPTION
   Produces, in $env:DIST (default: dist/release):
-    gridcraft-<version>-windows-<arch>.msi            per-machine installer (WiX v5)
-    gridcraft-<version>-windows-<arch>-portable.zip   gridcraft.exe + gridcraft-cli.exe
+    uni-excel-<version>-windows-<arch>.msi            per-machine installer (WiX v5)
+    uni-excel-<version>-windows-<arch>-portable.zip   gridcraft.exe + gridcraft-cli.exe
+    SHA256SUMS.txt                                    checksums of both; publish it with them,
+                                                      the app's updater refuses an MSI without it
 
   The binaries link the C runtime statically (+crt-static), so neither the MSI nor the portable
   zip needs the Visual C++ redistributable. Signing is delegated to sign.ps1 (skipped with a
@@ -128,4 +130,9 @@ if ($Arch -ne 'arm64' -or $HostArch -eq 'arm64') {
 } else {
   Write-Output "skipping gridcraft-cli --version: an $Arch build doesn't run on this $HostArch machine"
 }
-Get-Item $Msi, $Zip | Format-Table Name, Length
+# ---- checksums ---------------------------------------------------------------------------------
+# The updater checks the MSI it downloads against this file (sha256sum format).
+$Sums = Join-Path $Dist 'SHA256SUMS.txt'
+$lines = foreach ($f in $Msi, $Zip) { '{0}  {1}' -f (Get-FileHash -Algorithm SHA256 $f).Hash.ToLowerInvariant(), (Split-Path -Leaf $f) }
+[IO.File]::WriteAllText($Sums, (($lines -join "`n") + "`n"))
+Get-Item $Msi, $Zip, $Sums | Format-Table Name, Length

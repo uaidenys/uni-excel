@@ -1483,13 +1483,14 @@ fn about(ui: &mut egui::Ui, d: &mut Dialog) {
         "Contributors" => crate::credits::contributors_ui(ui),
         "Models" => crate::credits::models_ui(ui),
         _ => {
+            let lang = crate::i18n::current(ui.ctx());
             ui.heading("Uni Excel");
-            ui.label(format!("Versão {}", env!("CARGO_PKG_VERSION")));
-            ui.label("Autor: Denys Rodrigues de Oliveira");
+            ui.label(format!("{} {}", lang.tr("Version"), env!("CARGO_PKG_VERSION")));
+            ui.label(format!("{}: Denys Rodrigues de Oliveira", lang.tr("Author")));
             ui.hyperlink_to("github.com/uaidenys/uni-excel", "https://github.com/uaidenys/uni-excel");
             ui.add_space(8.0);
             // The original copyright notice is kept, as the MIT and Apache-2.0 licences require.
-            ui.label("Baseado no GridCraft, uma planilha open-source em Rust.");
+            ui.label(lang.tr("Based on GridCraft, an open-source spreadsheet written in Rust."));
             ui.label("Copyright (c) 2026 ArtCraft Team and the GridCraft contributors.");
             ui.label("Licensed under the MIT License or the Apache License, Version 2.0.");
             ui.hyperlink_to("getartcraft.com/apps/gridcraft", "https://getartcraft.com/apps/gridcraft");
