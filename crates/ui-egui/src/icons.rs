@@ -185,7 +185,7 @@ impl G<'_> {
 }
 
 /// Accent palette for icons (our own).
-pub const GREEN: Color32 = Color32::from_rgb(0x10, 0x7C, 0x41);
+pub const GREEN: Color32 = Color32::from_rgb(0x37, 0x55, 0x34);
 pub const BLUE: Color32 = Color32::from_rgb(0x2B, 0x7C, 0xD3);
 pub const RED: Color32 = Color32::from_rgb(0xD1, 0x3B, 0x2F);
 pub const YELLOW: Color32 = Color32::from_rgb(0xF2, 0xC3, 0x2E);

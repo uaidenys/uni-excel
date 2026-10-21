@@ -14,10 +14,10 @@ fn main() {
     }
     let mut res = winresource::WindowsResource::new();
     res.set_icon("../../assets/app-icon/gridcraft.ico")
-        .set("ProductName", "GridCraft")
-        .set("FileDescription", "GridCraft spreadsheet")
-        .set("CompanyName", "Learning Machines LLC")
-        .set("LegalCopyright", "Copyright (c) the GridCraft authors. MIT OR Apache-2.0.")
+        .set("ProductName", "Uni Excel")
+        .set("FileDescription", "Uni Excel")
+        .set("CompanyName", "Denys Rodrigues de Oliveira")
+        .set("LegalCopyright", "Uni Excel (c) Denys Rodrigues de Oliveira. Based on GridCraft, (c) the GridCraft authors. MIT OR Apache-2.0.")
         .set("OriginalFilename", "gridcraft.exe")
         .set("InternalName", "gridcraft");
     if let Err(e) = res.compile() {

@@ -1163,11 +1163,11 @@ pub(crate) fn paint_quadrant(
             let s = (11.0 * z * 1.2).clamp(8.0, 24.0);
             let b = Rect::from_center_size(rect.center(), vec2(s, s));
             let on = v == Value::Bool(true);
-            p.rect_filled(b, 2.0, if on { Color32::from_rgb(0x10, 0x7C, 0x41) } else { Color32::WHITE });
+            p.rect_filled(b, 2.0, if on { Color32::from_rgb(0x37, 0x55, 0x34) } else { Color32::WHITE });
             p.rect_stroke(
                 b,
                 2.0,
-                Stroke::new(1.0, if on { Color32::from_rgb(0x10, 0x7C, 0x41) } else { Color32::from_gray(110) }),
+                Stroke::new(1.0, if on { Color32::from_rgb(0x37, 0x55, 0x34) } else { Color32::from_gray(110) }),
                 StrokeKind::Inside,
             );
             if on {
@@ -2300,7 +2300,7 @@ fn interact(app: &mut SheetApp, ui: &mut egui::Ui, resp: &egui::Response, geo: &
                     // Ctrl (Cmd on macOS) swaps copying and extending, as in Excel.
                     let mode = if mods.command { "alternate" } else { "series" };
                     if let Err(e) = app.run("edit.autoFill", json!({"source": src.a1(), "target": t.a1(), "mode": mode})) {
-                        app.message = Some(("GridCraft".into(), crate::clean_error(&e)));
+                        app.message = Some(("Uni Excel".into(), crate::clean_error(&e)));
                     }
                 }
             }
@@ -2321,7 +2321,7 @@ fn interact(app: &mut SheetApp, ui: &mut egui::Ui, resp: &egui::Response, geo: &
             }
             Drag::MoveCols { source, before: Some(before) } => {
                 if let Err(e) = app.run("sheet.moveColumns", json!({"cols": source.a1(), "before": before})) {
-                    app.message = Some(("GridCraft".into(), crate::clean_error(&e)));
+                    app.message = Some(("Uni Excel".into(), crate::clean_error(&e)));
                 }
             }
             _ => {}

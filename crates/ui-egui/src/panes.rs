@@ -72,7 +72,7 @@ fn comments(app: &mut SheetApp, ui: &mut Ui) {
                     }
                     ui.label(egui::RichText::new(&c.author).color(Color32::from_gray(90)));
                     if c.resolved {
-                        ui.label(egui::RichText::new("Resolved").small().color(Color32::from_rgb(0x10, 0x7C, 0x41)));
+                        ui.label(egui::RichText::new("Resolved").small().color(Color32::from_rgb(0x37, 0x55, 0x34)));
                     }
                 });
                 ui.label(&c.text);
