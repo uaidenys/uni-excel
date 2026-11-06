@@ -230,7 +230,7 @@ pub(super) fn translate(text: &str) -> Option<&'static str> {
         "Command\nPalette" => "Paleta\nkomandi",
         "Agent\nControl" => "Kontrola\nagenta",
         "Action\nJournal" => "Dnevnik\nradnji",
-        "About\nUni Excel" => "O programu\nUni Excel",
+        "About\nUniPlanner" => "O programu\nUniPlanner",
         "Share" => "Deli",
         "Add Chart\nElement" => "Dodaj element\ngrafikona",
         "Change\nChart Type" => "Promeni\ntip grafikona",

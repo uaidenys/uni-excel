@@ -1,11 +1,11 @@
 <#
 .SYNOPSIS
-  Build, sign and package Uni Excel for Windows.
+  Build, sign and package UniPlanner for Windows.
 
 .DESCRIPTION
   Produces, in $env:DIST (default: dist/release):
-    uni-excel-<version>-windows-<arch>.msi            per-machine installer (WiX v5)
-    uni-excel-<version>-windows-<arch>-portable.zip   gridcraft.exe + gridcraft-cli.exe
+    uniplanner-<version>-windows-<arch>.msi            per-machine installer (WiX v5)
+    uniplanner-<version>-windows-<arch>-portable.zip   gridcraft.exe + gridcraft-cli.exe
     SHA256SUMS.txt                                    checksums of both; publish it with them,
                                                       the app's updater refuses an MSI without it
 
@@ -55,7 +55,7 @@ New-Item -ItemType Directory -Force -Path $Dist | Out-Null
 if (-not $env:GRIDCRAFT_BUILD_SHA) { $env:GRIDCRAFT_BUILD_SHA = (git -C $Root rev-parse HEAD 2>$null) }
 if (-not $env:GRIDCRAFT_BUILD_DATE) { $env:GRIDCRAFT_BUILD_DATE = (Get-Date).ToUniversalTime().ToString('yyyy-MM-dd') }
 
-Write-Output "Uni Excel $Version for Windows $Arch ($Target)"
+Write-Output "UniPlanner $Version for Windows $Arch ($Target)"
 
 if (-not $SkipBuild) {
   # Static CRT: no VC++ redistributable needed. Scoped to the target so host build scripts and
@@ -88,12 +88,15 @@ foreach ($check in @(@('gridcraft.exe', 2), @('gridcraft-cli.exe', 3))) {
 $Stage = Join-Path $TargetDir "windows-package\$Arch"
 Remove-Item -Recurse -Force $Stage -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Force -Path $Stage | Out-Null
-Copy-Item (Join-Path $Bin 'gridcraft.exe'), (Join-Path $Bin 'gridcraft-cli.exe') $Stage
+# The app ships as uniplanner.exe, the name the Uni Launcher runs and looks for; cargo builds it as
+# gridcraft.exe (the upstream package name).
+Copy-Item (Join-Path $Bin 'gridcraft.exe') (Join-Path $Stage 'uniplanner.exe')
+Copy-Item (Join-Path $Bin 'gridcraft-cli.exe') $Stage
 
-& (Join-Path $PSScriptRoot 'sign.ps1') (Join-Path $Stage 'gridcraft.exe') (Join-Path $Stage 'gridcraft-cli.exe')
+& (Join-Path $PSScriptRoot 'sign.ps1') (Join-Path $Stage 'uniplanner.exe') (Join-Path $Stage 'gridcraft-cli.exe')
 
 # ---- MSI ---------------------------------------------------------------------------------------
-$Msi = Join-Path $Dist "uni-excel-$Version-windows-$Arch.msi"
+$Msi = Join-Path $Dist "uniplanner-$Version-windows-$Arch.msi"
 Invoke-Native 'wix build' {
   wix build (Join-Path $PSScriptRoot 'gridcraft.wxs') -arch $Arch `
     -d "Version=$MsiVersion" -d "BinDir=$Stage" -d "IconPath=$(Join-Path $Root 'assets\app-icon\gridcraft.ico')" `
@@ -104,7 +107,7 @@ Remove-Item -Force -ErrorAction SilentlyContinue ([IO.Path]::ChangeExtension($Ms
 & (Join-Path $PSScriptRoot 'sign.ps1') $Msi
 
 # ---- portable zip ------------------------------------------------------------------------------
-$Portable = Join-Path $TargetDir "windows-package\uni-excel-$Version-windows-$Arch-portable"
+$Portable = Join-Path $TargetDir "windows-package\uniplanner-$Version-windows-$Arch-portable"
 Remove-Item -Recurse -Force $Portable -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Force -Path $Portable | Out-Null
 Copy-Item (Join-Path $Stage '*.exe') $Portable
@@ -118,7 +121,7 @@ if ($env:CRAFT_FONTS_DIR) {
     Copy-Item $ofl.FullName (Join-Path $Portable "OFL-$($ofl.Directory.Name).txt")
   }
 }
-$Zip = Join-Path $Dist "uni-excel-$Version-windows-$Arch-portable.zip"
+$Zip = Join-Path $Dist "uniplanner-$Version-windows-$Arch-portable.zip"
 Remove-Item -Force $Zip -ErrorAction SilentlyContinue
 Compress-Archive -Path $Portable -DestinationPath $Zip
 

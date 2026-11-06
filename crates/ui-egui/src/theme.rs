@@ -55,7 +55,7 @@ pub struct Tokens {
 impl Tokens {
     pub fn light() -> Tokens {
         Tokens {
-            // Uni Excel palette: #0F2A1D #375534 #6B9071 #AEC3B0 #E0ECDE #FFFFFF.
+            // UniPlanner palette: #0F2A1D #375534 #6B9071 #AEC3B0 #E0ECDE #FFFFFF.
             dark: false,
             window: Color32::from_rgb(0xE0, 0xEC, 0xDE),
             ribbon: Color32::from_rgb(0xFF, 0xFF, 0xFF),

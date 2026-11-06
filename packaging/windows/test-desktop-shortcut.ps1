@@ -103,7 +103,7 @@ function Assert-Desktop([bool] $Enabled) {
   $shortcut = $null
   try {
     $shortcut = $shell.CreateShortcut($DesktopLink)
-    Assert-That ($shortcut.TargetPath -ieq (Join-Path $InstallDir 'gridcraft.exe')) 'Desktop shortcut targets the wrong executable'
+    Assert-That ($shortcut.TargetPath -ieq (Join-Path $InstallDir 'uniplanner.exe')) 'Desktop shortcut targets the wrong executable'
     Assert-That ($shortcut.WorkingDirectory.TrimEnd('\') -ieq $InstallDir.TrimEnd('\')) 'Desktop shortcut has the wrong working directory'
     Assert-That ($shortcut.IconLocation -match '^(.*),\s*0$') 'Desktop shortcut must use icon index zero'
     $iconPath = [Environment]::ExpandEnvironmentVariables($Matches[1].Trim('"'))
@@ -118,7 +118,7 @@ function Assert-Desktop([bool] $Enabled) {
 
 function Assert-Removed($Package) {
   Assert-That (-not (Test-Path (Join-Path $UninstallRoot $Package.Code))) 'MSI still registered after removal'
-  Assert-That (-not (Test-Path (Join-Path $InstallDir 'gridcraft.exe'))) 'App executable remains after uninstall'
+  Assert-That (-not (Test-Path (Join-Path $InstallDir 'uniplanner.exe'))) 'App executable remains after uninstall'
   Assert-That (-not (Test-Path (Join-Path $InstallDir 'gridcraft-cli.exe'))) 'CLI executable remains after uninstall'
   Assert-That (-not (Test-Path $DesktopLink)) 'Desktop shortcut remains after uninstall'
   Assert-That (-not (Test-Path $StartLink)) 'Start Menu shortcut remains after uninstall'

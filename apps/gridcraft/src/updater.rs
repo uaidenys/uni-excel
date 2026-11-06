@@ -1,17 +1,17 @@
-//! Windows only: automatic updates from GitHub Releases (`uaidenys/uni-excel`).
+//! Windows only: automatic updates from GitHub Releases (`uaidenys/uniplanner`).
 //!
 //! At startup a hidden PowerShell process asks the GitHub API for the latest release. When its
 //! version is newer than this build, it downloads the release's `*-windows-<arch>.msi`, checks it
-//! against the release's `SHA256SUMS.txt`, waits until every Uni Excel window has closed and then
+//! against the release's `SHA256SUMS.txt`, waits until every UniPlanner window has closed and then
 //! runs the installer (`msiexec /passive`). Every failure (no network, no release, rate limit, a
-//! bad checksum) is silent for the user and noted in `%TEMP%\uni-excel-update\update.log`: the app
+//! bad checksum) is silent for the user and noted in `%TEMP%\uniplanner-update\update.log`: the app
 //! is never blocked or interrupted by the check.
 //!
 //! Only the copy the MSI installed updates itself: debug builds, the portable zip and any other
 //! copy are skipped, so a dev run never installs the per-machine package. Setting the environment
-//! variable `UNI_EXCEL_NO_UPDATE` (to any value) turns updates off.
+//! variable `UNIPLANNER_NO_UPDATE` (to any value) turns updates off.
 
-const REPO: &str = "uaidenys/uni-excel";
+const REPO: &str = "uaidenys/uniplanner";
 
 #[cfg(target_arch = "aarch64")]
 const ASSET_SUFFIX: &str = "-windows-arm64.msi";
@@ -24,13 +24,13 @@ const SCRIPT: &str = r#"param([string] $Repo, [string] $Version, [string] $Suffi
 $ErrorActionPreference = 'Stop'
 # The progress bar makes Invoke-WebRequest many times slower on Windows PowerShell 5.1.
 $ProgressPreference = 'SilentlyContinue'
-$dir = Join-Path $env:TEMP 'uni-excel-update'
+$dir = Join-Path $env:TEMP 'uniplanner-update'
 $log = Join-Path $dir 'update.log'
 function Write-Log([string] $Message) {
   try { Add-Content -Path $log -Value ('{0:yyyy-MM-dd HH:mm:ss} {1}' -f (Get-Date), $Message) } catch {}
 }
 
-# 'v1.2.3', '1.2', 'uni-excel-v1.2.3', '1.2.3-rc.1', '1.2.3+build' -> number and pre-release tag.
+# 'v1.2.3', '1.2', 'uniplanner-v1.2.3', '1.2.3-rc.1', '1.2.3+build' -> number and pre-release tag.
 function Read-Version([string] $Text) {
   if ($Text -notmatch '^(?:[A-Za-z][A-Za-z0-9_-]*?[-_])?[vV]?(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:-([0-9A-Za-z.-]+))?(?:\+[0-9A-Za-z.-]*)?$') { return $null }
   $number = New-Object Version ([int]$Matches[1]), ([int]('0' + $Matches[2])), ([int]('0' + $Matches[3]))
@@ -48,21 +48,21 @@ function Test-Newer([string] $Tag, [string] $Current) {
 
 function Test-InstalledCopy([string] $Path) {
   try {
-    $key = Get-Item 'HKLM:\Software\Microsoft\Windows\CurrentVersion\App Paths\uni-excel.exe'
+    $key = Get-Item 'HKLM:\Software\Microsoft\Windows\CurrentVersion\App Paths\uniplanner.exe'
     $installed = [string] $key.GetValue('')
     return $installed -and ([IO.Path]::GetFullPath($installed) -eq [IO.Path]::GetFullPath($Path))
   } catch { return $false }
 }
 
 New-Item -ItemType Directory -Force -Path $dir | Out-Null
-# One update at a time, however many Uni Excel windows are open.
-$mutex = New-Object System.Threading.Mutex($false, 'Local\UniExcelUpdater')
+# One update at a time, however many UniPlanner windows are open.
+$mutex = New-Object System.Threading.Mutex($false, 'Local\UniPlannerUpdater')
 try { $owned = $mutex.WaitOne(0) } catch [System.Threading.AbandonedMutexException] { $owned = $true }
 if (-not $owned) { exit 0 }
 try {
   if (-not (Test-InstalledCopy $AppPath)) { exit 0 }
   [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-  $headers = @{ 'User-Agent' = 'uni-excel-updater'; 'Accept' = 'application/vnd.github+json' }
+  $headers = @{ 'User-Agent' = 'uniplanner-updater'; 'Accept' = 'application/vnd.github+json' }
   $rel = Invoke-RestMethod -UseBasicParsing -Headers $headers "https://api.github.com/repos/$Repo/releases/latest"
   if (-not (Test-Newer $rel.tag_name $Version)) { exit 0 }
 
@@ -76,7 +76,7 @@ try {
   $asset = $rel.assets | Where-Object { $_.name -like "*$Suffix" } | Select-Object -First 1
   $sumsAsset = $rel.assets | Where-Object { $_.name -eq 'SHA256SUMS.txt' } | Select-Object -First 1
   if (-not $asset -or -not $sumsAsset) { Write-Log "$($rel.tag_name): no $Suffix installer or no SHA256SUMS.txt"; exit 0 }
-  $download = @{ 'User-Agent' = 'uni-excel-updater' }
+  $download = @{ 'User-Agent' = 'uniplanner-updater' }
   $sumsFile = Join-Path $dir 'SHA256SUMS.txt'
   Invoke-WebRequest -UseBasicParsing -Headers $download $sumsAsset.browser_download_url -OutFile $sumsFile
   $expected = $null
@@ -96,7 +96,7 @@ try {
     exit 0
   }
 
-  # Install only once no Uni Excel window is left open, so no file is in use.
+  # Install only once no UniPlanner window is left open, so no file is in use.
   $name = [IO.Path]::GetFileNameWithoutExtension($AppPath)
   while (@(Get-Process -Name $name -ErrorAction SilentlyContinue | Where-Object { $_.Path -eq $AppPath }).Count -gt 0) {
     Start-Sleep -Seconds 3
@@ -120,7 +120,7 @@ try {
 
 /// Starts the background update check. Never fails: problems are only logged.
 pub fn spawn() {
-    if cfg!(debug_assertions) || std::env::var_os("UNI_EXCEL_NO_UPDATE").is_some() {
+    if cfg!(debug_assertions) || std::env::var_os("UNIPLANNER_NO_UPDATE").is_some() {
         return;
     }
     if let Err(e) = try_spawn() {
@@ -132,7 +132,7 @@ fn try_spawn() -> std::io::Result<()> {
     use std::os::windows::process::CommandExt;
     const CREATE_NO_WINDOW: u32 = 0x0800_0000;
     let exe = std::env::current_exe()?;
-    let dir = std::env::temp_dir().join("uni-excel-update");
+    let dir = std::env::temp_dir().join("uniplanner-update");
     std::fs::create_dir_all(&dir)?;
     let script = dir.join("update.ps1");
     std::fs::write(&script, SCRIPT)?;

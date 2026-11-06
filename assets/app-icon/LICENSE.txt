@@ -1,7 +1,7 @@
-Uni Excel app icon (gridcraft.svg and every file derived from it in this directory:
+UniPlanner app icon (gridcraft.svg and every file derived from it in this directory:
 gridcraft-1024.png, gridcraft-macos-512.png, gridcraft.icns, gridcraft.ico, hicolor/).
 
-Original artwork by Denys Rodrigues de Oliveira (icone uni excel.svg). All rights reserved.
+Original artwork by Denys Rodrigues de Oliveira (icone UniPlanner.svg). All rights reserved.
 The icon is not covered by the MIT / Apache-2.0 licence of the source code.
 
 It replaces the GridCraft placeholder icon, which was original work by the GridCraft

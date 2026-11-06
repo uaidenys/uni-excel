@@ -75,7 +75,7 @@ pub fn start() {
         if let Some(el) = document.get_element_by_id(LOADING_ID) {
             match result {
                 Ok(()) => el.remove(),
-                Err(e) => el.set_inner_html(&format!("<p>O Uni Excel não conseguiu iniciar: {e:?}</p><p>É preciso um navegador com WebGPU ou WebGL2.</p>")),
+                Err(e) => el.set_inner_html(&format!("<p>O UniPlanner não conseguiu iniciar: {e:?}</p><p>É preciso um navegador com WebGPU ou WebGL2.</p>")),
             }
         }
     });

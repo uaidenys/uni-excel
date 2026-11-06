@@ -14,11 +14,11 @@ fn main() {
     }
     let mut res = winresource::WindowsResource::new();
     res.set_icon("../../assets/app-icon/gridcraft.ico")
-        .set("ProductName", "Uni Excel")
-        .set("FileDescription", "Uni Excel")
+        .set("ProductName", "UniPlanner")
+        .set("FileDescription", "UniPlanner")
         .set("CompanyName", "Denys Rodrigues de Oliveira")
-        .set("LegalCopyright", "Uni Excel (c) Denys Rodrigues de Oliveira. Based on GridCraft, (c) the GridCraft authors. MIT OR Apache-2.0.")
-        .set("OriginalFilename", "gridcraft.exe")
+        .set("LegalCopyright", "UniPlanner (c) Denys Rodrigues de Oliveira. Based on GridCraft, (c) the GridCraft authors. MIT OR Apache-2.0.")
+        .set("OriginalFilename", "uniplanner.exe")
         .set("InternalName", "gridcraft");
     if let Err(e) = res.compile() {
         if std::env::var_os("GRIDCRAFT_REQUIRE_WINRES").is_some() {
