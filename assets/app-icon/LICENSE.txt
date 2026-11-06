@@ -1,10 +1,10 @@
-UniPlanner app icon (gridcraft.svg and every file derived from it in this directory:
-gridcraft-1024.png, gridcraft-macos-512.png, gridcraft.icns, gridcraft.ico, hicolor/).
+Ícone do UniPlanner (todos os arquivos desta pasta)
 
-Original artwork by Denys Rodrigues de Oliveira (icone UniPlanner.svg). All rights reserved.
-The icon is not covered by the MIT / Apache-2.0 licence of the source code.
+Marca da Uniphar Indústria Farmacêutica, criada por Denys Rodrigues de Oliveira. Todos os
+direitos reservados; não coberta pela licença MIT/Apache do código. Termos em
+docs/brand/LICENSE-brand.txt.
 
-It replaces the GridCraft placeholder icon, which was original work by the GridCraft
-contributors under MIT OR Apache-2.0.
+UniPlanner app icon (every file in this directory): a Uniphar mark, all rights reserved, not
+covered by the MIT/Apache licence of the code. Terms: docs/brand/LICENSE-brand.txt.
 
 Regenerate the derived files with packaging/icons.sh.
